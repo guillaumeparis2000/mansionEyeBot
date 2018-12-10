@@ -62,6 +62,7 @@ func timeHandler(m *tbot.Message) {
 }
 
 func videoHandler(m *tbot.Message) {
+	m.Reply("This operation can be long! Please wait.")
 	dir := `/var/lib/motioneye/Camera1/`
 
 	files, _ := ioutil.ReadDir(dir)
@@ -79,6 +80,7 @@ func videoHandler(m *tbot.Message) {
 
 	if len(videos) > 0 {
 		var lastVideo = dir + videos[0]
+		m.Reply("Uploading Video, Please wait a little more. Thanks")
 		m.ReplyVideo(lastVideo)
 	} else {
 		m.Reply("No video available!")
@@ -95,9 +97,13 @@ func webControl(cmdType string, cmd string) string {
 
 	bodyBytes, err := ioutil.ReadAll(rs.Body)
 	if err != nil {
-		panic(err)
+		return err.Error()
 	}
 
 	bodyString := string(bodyBytes)
-	return bodyString
+
+	if len(bodyString) > 0 {
+		return bodyString
+	}
+	return "OK"
 }

@@ -17,6 +17,7 @@ type application struct {
 
 var validUsers = []string{"user1", "user2"}
 
+// Search if an array contain a given string
 func contains(a []string, x string) bool {
 	for _, n := range a {
 		if x == n {
@@ -48,54 +49,56 @@ func main() {
 	}
 }
 
+// Middleware to only allow validated user to chat with the bot.
 func (a *application) auth(h tbot.UpdateHandler) tbot.UpdateHandler {
 	return func(u *tbot.Update) {
 		if contains(validUsers, u.Message.Chat.Username) {
 			h(u)
 		} else {
-			a.client.SendMessage(u.Message.Chat.ID, "You are not allowed to use this Bot!")
+			a.sendResponse(u.Message, "You are not allowed to use this Bot!")
 		}
 	}
 }
 
+// Return the current status of the camera.
 func (a *application) statusHandler(m *tbot.Message) {
 	result := webControl("detection", "status")
-	a.client.SendChatAction(m.Chat.ID, tbot.ActionTyping)
-	a.client.SendMessage(m.Chat.ID, result)
+	a.sendResponse(m, result)
 }
 
+// Pause the motion detection of the camera.
 func (a *application) pauseHandler(m *tbot.Message) {
 	result := webControl("detection", "pause")
-	a.client.SendChatAction(m.Chat.ID, tbot.ActionTyping)
-	a.client.SendMessage(m.Chat.ID, result)
+	a.sendResponse(m, result)
 }
 
+// Resume the motion detection of the camera.
 func (a *application) resumeHandler(m *tbot.Message) {
 	result := webControl("detection", "start")
-	a.client.SendChatAction(m.Chat.ID, tbot.ActionTyping)
-	a.client.SendMessage(m.Chat.ID, result)
+	a.sendResponse(m, result)
 }
 
+// Return the connection status of the camera.
 func (a *application) checkHandler(m *tbot.Message) {
 	result := webControl("detection", "connection")
-	a.client.SendChatAction(m.Chat.ID, tbot.ActionTyping)
-	a.client.SendMessage(m.Chat.ID, result)
+	a.sendResponse(m, result)
 }
 
+// Create a snapshot.
 func (a *application) snapShotHandler(m *tbot.Message) {
 	result := webControl("action", "snapshot")
-	a.client.SendChatAction(m.Chat.ID, tbot.ActionUploadPhoto)
-	a.client.SendMessage(m.Chat.ID, result)
+	a.sendResponse(m, result)
 }
 
+// Return the current time in the server.
 func (a *application) timeHandler(m *tbot.Message) {
 	result := time.Now().Format(time.ANSIC)
-	a.client.SendChatAction(m.Chat.ID, tbot.ActionTyping)
-	a.client.SendMessage(m.Chat.ID, result)
+	a.sendResponse(m, result)
 }
 
+// Send the last recorded video to the chat.
 func (a *application) videoHandler(m *tbot.Message) {
-	a.client.SendMessage(m.Chat.ID, "This operation can be long! Please wait.")
+	a.sendResponse(m, "This operation can be long! Please wait.")
 	dir := `/var/lib/motioneye/Camera1/`
 
 	files, _ := ioutil.ReadDir(dir)
@@ -112,10 +115,9 @@ func (a *application) videoHandler(m *tbot.Message) {
 	}
 
 	if len(videos) > 0 {
-		var lastVideo = dir + videos[0]
-		a.client.SendMessage(m.Chat.ID, "Uploading Video, Please wait a little more. Thanks")
 		a.client.SendChatAction(m.Chat.ID, tbot.ActionUploadVideo)
-		_, err := a.client.SendVideoFile(m.Chat.ID, lastVideo)
+		var lastVideo = dir + videos[0]
+		_, err := a.client.SendVideoFile(m.Chat.ID, lastVideo, tbot.OptCaption(videos[0]))
 		if err != nil {
 			a.client.SendMessage(m.Chat.ID, err.Error())
 		}
@@ -124,6 +126,8 @@ func (a *application) videoHandler(m *tbot.Message) {
 	}
 }
 
+// Make the Api request to the motion server.
+// Return the result of each command or the error in text format.
 func webControl(cmdType string, cmd string) string {
 	// Make a get request
 	rs, err := http.Get("http://localhost:7999/0/" + cmdType + "/" + cmd)
@@ -143,4 +147,18 @@ func webControl(cmdType string, cmd string) string {
 		return bodyString
 	}
 	return "OK"
+}
+
+// Send response messages to the chat
+// In case of error, send the error as a text message.
+func (a *application) sendResponse(m *tbot.Message, response string) {
+	arrAction := a.client.SendChatAction(m.Chat.ID, tbot.ActionTyping)
+	if arrAction != nil {
+		log.Println(arrAction.Error())
+	}
+
+	_, errMsg := a.client.SendMessage(m.Chat.ID, response)
+	if errMsg != nil {
+		log.Println(errMsg.Error())
+	}
 }

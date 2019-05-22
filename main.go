@@ -15,7 +15,7 @@ type application struct {
 	client *tbot.Client
 }
 
-var validUsers = []string{"user1", "user2"}
+var validUsers = strings.Split(os.Getenv("TELEGRAM_VALID_USERS"), ",")
 
 // Search if an array contain a given string
 func contains(a []string, x string) bool {
@@ -42,6 +42,8 @@ func main() {
 	bot.HandleMessage("/time", app.timeHandler)
 	bot.HandleMessage("/video", app.videoHandler)
 	bot.HandleMessage("/snapshot", app.snapShotHandler)
+	bot.HandleMessage("/get_my_id", app.getMyIDHandler)
+	bot.HandleMessage("/valid_users", app.validUsersHandler)
 
 	err := bot.Start()
 	if err != nil {
@@ -124,6 +126,16 @@ func (a *application) videoHandler(m *tbot.Message) {
 	} else {
 		a.client.SendMessage(m.Chat.ID, "No video available!")
 	}
+}
+
+// Return the user telegram chat ID
+func (a *application) getMyIDHandler(m *tbot.Message) {
+	a.sendResponse(m, m.Chat.ID)
+}
+
+// Return the list a allowed users
+func (a *application) validUsersHandler(m *tbot.Message) {
+	a.sendResponse(m, strings.Join(validUsers, ", "))
 }
 
 // Make the Api request to the motion server.

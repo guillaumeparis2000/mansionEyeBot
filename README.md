@@ -1,7 +1,8 @@
-Before executing the bot remember to export yout telegram token like this:
+Before executing the bot remember to export yout telegram token and your allowed users like this:
 
 ```sh
 export TELEGRAM_TOKEN=your:private_token
+export TELEGRAM_VALID_USERS=user1,user2,user9
 ```
 
 ## Compilation for Raspberry Pi 1

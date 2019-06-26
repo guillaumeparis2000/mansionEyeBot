@@ -1,0 +1,13 @@
+[Unit]
+Description=MansionEye Bot
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+Environment=TELEGRAM_TOKEN=<YOUR_TOKEN>
+Environment=TELEGRAM_VALID_USERS=user1,user4
+ExecStart=/opt/goldorackBot/mansionEyeBot
+
+[Install]
+WantedBy=multi-user.target

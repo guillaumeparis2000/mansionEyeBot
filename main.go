@@ -9,6 +9,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+	"fmt"
+	"path/filepath"
 )
 
 type application struct {
@@ -101,31 +103,43 @@ func (a *application) timeHandler(m *tbot.Message) {
 // Send the last recorded video to the chat.
 func (a *application) videoHandler(m *tbot.Message) {
 	a.sendResponse(m, "This operation can be long! Please wait.")
-	dir := `/var/lib/motioneye/Camera1/`
+	rootDir := `/var/lib/motioneye/`
 
-	files, _ := ioutil.ReadDir(dir)
-	sort.Slice(files, func(i, j int) bool {
-		return files[i].ModTime().Unix() > files[j].ModTime().Unix()
-	})
+	dirs, err := ioutil.ReadDir(rootDir)
+    if err != nil {
+        log.Fatal(err)
+    }
 
-	var videos []string
-	for _, file := range files {
-		r := strings.HasSuffix(file.Name(), ".mp4")
-		if r {
-			videos = append(videos, file.Name())
+    for _, dir := range dirs {
+		if dir.IsDir() {
+			camDir := filepath.Join(rootDir, dir.Name())
+			files, _ := ioutil.ReadDir(camDir)
+			sort.Slice(files, func(i, j int) bool {
+				return files[i].ModTime().Unix() > files[j].ModTime().Unix()
+			})
+
+			var videos []string
+			for _, file := range files {
+				r := strings.HasSuffix(file.Name(), ".mp4")
+				if r {
+					videos = append(videos, file.Name())
+				}
+			}
+
+			if len(videos) > 0 {
+				a.client.SendChatAction(m.Chat.ID, tbot.ActionUploadVideo)
+				var lastVideo = filepath.Join(camDir, videos[0])
+				_, err := a.client.SendVideoFile(m.Chat.ID, lastVideo, tbot.OptCaption(videos[0]))
+				if err != nil {
+					a.client.SendMessage(m.Chat.ID, err.Error())
+				}
+			} else {
+				a.client.SendMessage(m.Chat.ID, fmt.Sprintf("No video available for %s!", dir.Name()))
+			}
 		}
-	}
+    }
 
-	if len(videos) > 0 {
-		a.client.SendChatAction(m.Chat.ID, tbot.ActionUploadVideo)
-		var lastVideo = dir + videos[0]
-		_, err := a.client.SendVideoFile(m.Chat.ID, lastVideo, tbot.OptCaption(videos[0]))
-		if err != nil {
-			a.client.SendMessage(m.Chat.ID, err.Error())
-		}
-	} else {
-		a.client.SendMessage(m.Chat.ID, "No video available!")
-	}
+
 }
 
 // Return the user telegram chat ID

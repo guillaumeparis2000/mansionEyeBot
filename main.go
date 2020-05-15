@@ -1,16 +1,18 @@
 package main
 
 import (
-	"github.com/yanzay/tbot"
+	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
-	"fmt"
-	"path/filepath"
+
+	"github.com/yanzay/tbot/v2"
 )
 
 type application struct {
@@ -18,6 +20,7 @@ type application struct {
 }
 
 var validUsers = strings.Split(os.Getenv("TELEGRAM_VALID_USERS"), ",")
+var chatIds = strings.Split(os.Getenv("TELEGRAM_CHAT_IDS"), ",")
 
 // Search if an array contain a given string
 func contains(a []string, x string) bool {
@@ -37,19 +40,39 @@ func main() {
 	bot.Use(app.auth)
 
 	app.client = bot.Client()
-	bot.HandleMessage("/status", app.statusHandler)
-	bot.HandleMessage("/pause", app.pauseHandler)
-	bot.HandleMessage("/resume", app.resumeHandler)
-	bot.HandleMessage("/check", app.checkHandler)
-	bot.HandleMessage("/time", app.timeHandler)
-	bot.HandleMessage("/video", app.videoHandler)
-	bot.HandleMessage("/snapshot", app.snapShotHandler)
-	bot.HandleMessage("/get_my_id", app.getMyIDHandler)
-	bot.HandleMessage("/valid_users", app.validUsersHandler)
 
-	err := bot.Start()
-	if err != nil {
-		log.Fatal(err)
+	actionPtr := flag.String("action", "service", "action name: service, send-picture")
+	picturePtr := flag.String("picture", "picture", "picture path")
+	flag.Parse()
+
+	if *actionPtr == "service" {
+		fmt.Println("service bot")
+		bot.HandleMessage("/status", app.statusHandler)
+		bot.HandleMessage("/pause", app.pauseHandler)
+		bot.HandleMessage("/resume", app.resumeHandler)
+		bot.HandleMessage("/check", app.checkHandler)
+		bot.HandleMessage("/time", app.timeHandler)
+		bot.HandleMessage("/video", app.videoHandler)
+		bot.HandleMessage("/snapshot", app.snapShotHandler)
+		bot.HandleMessage("/get_my_id", app.getMyIDHandler)
+		bot.HandleMessage("/valid_users", app.validUsersHandler)
+
+		err := bot.Start()
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else if *actionPtr == "send-picture" && *picturePtr != "" {
+		for _, chatID := range chatIds {
+			_, err := app.client.SendPhotoFile(chatID, *picturePtr, tbot.OptCaption("Motion Detected"))
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+
+		err := bot.Start()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 

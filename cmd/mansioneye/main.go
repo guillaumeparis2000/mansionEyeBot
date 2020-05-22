@@ -21,7 +21,7 @@ func main() {
 
 	if *actionPtr == "service" {
 		bot.HandleService()
-	} else if *actionPtr == "send-picture" && *picturePtr != ""{
+	} else if *actionPtr == "send-picture" && *picturePtr != "" {
 		picture := *picturePtr
 		bot.HandleSendPicture(picture)
 	}

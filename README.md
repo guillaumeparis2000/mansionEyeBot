@@ -6,13 +6,14 @@ export TELEGRAM_VALID_USERS=user1,user2,user9
 export TELEGRAM_CHAT_IDS=123,1234545,123343
 ```
 
-## Compilation for Raspberry Pi 1
+## Compilation
 
-This command will build for `ARM-6`. The `ldflags` `-s` and `-w` strip the debugging information and reduce the size of the executable.
+To compile the binary, you can use the make file like this:
 
-```sh
-GOOS=linux GOARCH=arm GOARM=6 go build  -ldflags="-s -w" -v main.go
-```
+- `make release`: Create a release
+- `make release-pi`: Create a release for raspberry pi
+- `make debug`: Create a release for debugging
+- `make clean`: Clean previous builds
 
 ## Deploy as a service
 

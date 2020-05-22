@@ -2,7 +2,6 @@ package motioneye
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 	"path/filepath"
 	"sort"
@@ -10,33 +9,33 @@ import (
 	"time"
 )
 // Status return the current status of the camera.
-func Status() string {
-	result := webControl("detection", "status")
-	return result
+func Status() (string, error) {
+	result, err := webControl("detection", "status")
+	return result, err
 }
 
 // Pause the motion detection of the camera.
-func Pause() string {
-	result := webControl("detection", "pause")
-	return result
+func Pause() (string, error) {
+	result, err := webControl("detection", "pause")
+	return result, err
 }
 
 // Resume the motion detection of the camera.
-func Resume() string {
-	result := webControl("detection", "start")
-	return result
+func Resume() (string, error) {
+	result, err := webControl("detection", "start")
+	return result, err
 }
 
 // Check Return the connection status of the camera.
-func Check() string {
-	result := webControl("detection", "connection")
-	return result
+func Check() (string, error) {
+	result, err := webControl("detection", "connection")
+	return result, err
 }
 
 // SnapShot Create a snapshot.
-func SnapShot() string{
-	result := webControl("action", "snapshot")
-	return result
+func SnapShot() (string, error) {
+	result, err := webControl("action", "snapshot")
+	return result, err
 }
 
 // Time Return the current time in the server.
@@ -46,15 +45,15 @@ func Time() string {
 }
 
 // GetLastVideos Return the last recorded videos.
-func GetLastVideos() []string {
+func GetLastVideos() ([]string, error) {
+	var videos []string
 	rootDir := `/var/lib/motioneye/`
 
 	dirs, err := ioutil.ReadDir(rootDir)
 	if err != nil {
-		log.Fatal(err)
+		return videos, err
 	}
 
-	var videos []string
 	for _, dir := range dirs {
 		if dir.IsDir() {
 			camDir := filepath.Join(rootDir, dir.Name())
@@ -72,28 +71,29 @@ func GetLastVideos() []string {
 		}
 	}
 
-	return videos
+	return videos, nil
 }
 
 // Make the Api request to the motion server.
 // Return the result of each command or the error in text format.
-func webControl(cmdType string, cmd string) string {
+func webControl(cmdType string, cmd string) (string, error) {
 	// Make a get request
 	rs, err := http.Get("http://localhost:7999/0/" + cmdType + "/" + cmd)
 	if err != nil {
-		return err.Error()
+		return "", err
 	}
 	defer rs.Body.Close()
 
 	bodyBytes, err := ioutil.ReadAll(rs.Body)
 	if err != nil {
-		return err.Error()
+		return "", err
 	}
 
 	bodyString := string(bodyBytes)
 
 	if len(bodyString) > 0 {
-		return bodyString
+		return bodyString, nil
 	}
-	return "OK"
+
+	return "OK", nil
 }

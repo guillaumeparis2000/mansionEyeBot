@@ -2,7 +2,6 @@ package telegrambot
 
 import (
 	"fmt"
-	"log"
 	"path/filepath"
 	"strings"
 
@@ -71,23 +70,23 @@ func (bc *Botconfig) HandleSendPicture(picture string) {
 }
 
 func (bc *Botconfig) statusHandler(m *tbot.Message) {
-	result := motioneye.Status()
-	bc.sendResponse(m, result)
+	result, err := motioneye.Status()
+	bc.sendResponseOrError(m, result, err)
 }
 
 func (bc *Botconfig) pauseHandler(m *tbot.Message) {
-	result := motioneye.Pause()
-	bc.sendResponse(m, result)
+	result, err := motioneye.Pause()
+	bc.sendResponseOrError(m, result, err)
 }
 
 func (bc *Botconfig) resumeHandler(m *tbot.Message) {
-	result := motioneye.Resume()
-	bc.sendResponse(m, result)
+	result, err := motioneye.Resume()
+	bc.sendResponseOrError(m, result, err)
 }
 
 func (bc *Botconfig) checkHandler(m *tbot.Message) {
-	result := motioneye.Check()
-	bc.sendResponse(m, result)
+	result, err := motioneye.Check()
+	bc.sendResponseOrError(m, result, err)
 }
 
 func (bc *Botconfig) timeHandler(m *tbot.Message) {
@@ -95,12 +94,26 @@ func (bc *Botconfig) timeHandler(m *tbot.Message) {
 	bc.sendResponse(m, result)
 }
 
+func (bc *Botconfig) snapShotHandler(m *tbot.Message) {
+	result, err := motioneye.SnapShot()
+	bc.sendResponseOrError(m, result, err)
+}
+
+func (bc *Botconfig) sendResponseOrError(m *tbot.Message, result string, err error) {
+	if err != nil {
+		bc.sendResponse(m, err.Error())
+	} else {
+		bc.sendResponse(m, result)
+	}
+}
+
 func (bc *Botconfig) videoHandler(m *tbot.Message) {
 	bc.sendResponse(m, "This operation can be long! Please wait.")
 
-	videos := motioneye.GetLastVideos()
-
-	if len(videos) > 0 {
+	videos, err := motioneye.GetLastVideos()
+	if err != nil {
+		bc.client.SendMessage(m.Chat.ID, err.Error())
+	} else if len(videos) > 0 {
 		bc.client.SendChatAction(m.Chat.ID, tbot.ActionUploadVideo)
 		var lastVideo = filepath.Base(videos[0])
 		_, err := bc.client.SendVideoFile(m.Chat.ID, lastVideo, tbot.OptCaption(videos[0]))
@@ -110,11 +123,6 @@ func (bc *Botconfig) videoHandler(m *tbot.Message) {
 	} else {
 		bc.client.SendMessage(m.Chat.ID, fmt.Sprintf("No video available!"))
 	}
-}
-
-func (bc *Botconfig) snapShotHandler(m *tbot.Message) {
-	result := motioneye.SnapShot()
-	bc.sendResponse(m, result)
 }
 
 // getMyIDHandler Return the user telegram chat ID
@@ -132,12 +140,12 @@ func (bc *Botconfig) validUsersHandler(m *tbot.Message) {
 func (bc *Botconfig) sendResponse(m *tbot.Message, response string) {
 	arrAction := bc.client.SendChatAction(m.Chat.ID, tbot.ActionTyping)
 	if arrAction != nil {
-		log.Println(arrAction.Error())
+		bc.client.SendMessage(m.Chat.ID, arrAction.Error())
 	}
 
 	_, errMsg := bc.client.SendMessage(m.Chat.ID, response)
 	if errMsg != nil {
-		log.Println(errMsg.Error())
+		bc.client.SendMessage(m.Chat.ID, errMsg.Error())
 	}
 }
 

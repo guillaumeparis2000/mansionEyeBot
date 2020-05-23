@@ -1,6 +1,6 @@
 MODULE := github.com/guillaumeparis2000/mansionEyeBot
 
-CMDS := mansionEye
+CMDS := mansioneye
 
 GIT_COMMIT = $(shell git rev-parse HEAD)
 GIT_SHA    = $(shell git rev-parse --short HEAD)

@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
   pull_request:
-    branches: [master, feature/autobuild]
+    branches: [master]
 
 jobs:
   build:
@@ -25,3 +25,7 @@ jobs:
           go get -v -t -d ./...
       - name: Build
         run: make release
+      - name: Build Pi
+        run: make release-pi
+      - name: Build Pi1
+        run: make release-pi1

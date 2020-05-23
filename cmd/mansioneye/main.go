@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/guillaumeparis2000/mansionEyeBot/pkg/telegrambot"
+	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/telegrambot"
 )
 
 func main() {

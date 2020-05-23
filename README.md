@@ -18,7 +18,7 @@ To compile the binary, you can use the make file like this:
 ## Deploy as a service
 
 Copy the executable in `/opt/goldorackBot/mansionEyeBot`
-Copy the `mansioneyebot.service` file in `/etc/systemd/system/`
+Copy the `init/mansioneyebot.service` file in `/etc/systemd/system/`
 Edit `mansioneyebot.service` and replace `TELEGRAM_TOKEN`, `TELEGRAM_VALID_USERS` and `TELEGRAM_CHAT_IDS` by the real values.
 
 Make the file executable:

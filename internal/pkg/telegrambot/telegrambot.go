@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/guillaumeparis2000/mansionEyeBot/pkg/motioneye"
+	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/motioneye"
 	"github.com/yanzay/tbot/v2"
 )
 

@@ -10,31 +10,31 @@ import (
 )
 // Status return the current status of the camera.
 func Status() (string, error) {
-	result, err := webControl("detection", "status")
+	result, err := restAPI("detection", "status")
 	return result, err
 }
 
 // Pause the motion detection of the camera.
 func Pause() (string, error) {
-	result, err := webControl("detection", "pause")
+	result, err := restAPI("detection", "pause")
 	return result, err
 }
 
 // Resume the motion detection of the camera.
 func Resume() (string, error) {
-	result, err := webControl("detection", "start")
+	result, err := restAPI("detection", "start")
 	return result, err
 }
 
 // Check Return the connection status of the camera.
 func Check() (string, error) {
-	result, err := webControl("detection", "connection")
+	result, err := restAPI("detection", "connection")
 	return result, err
 }
 
 // SnapShot Create a snapshot.
 func SnapShot() (string, error) {
-	result, err := webControl("action", "snapshot")
+	result, err := restAPI("action", "snapshot")
 	return result, err
 }
 
@@ -76,7 +76,7 @@ func GetLastVideos() ([]string, error) {
 
 // Make the Api request to the motion server.
 // Return the result of each command or the error in text format.
-func webControl(cmdType string, cmd string) (string, error) {
+func restAPI(cmdType string, cmd string) (string, error) {
 	// Make a get request
 	rs, err := http.Get("http://localhost:7999/0/" + cmdType + "/" + cmd)
 	if err != nil {

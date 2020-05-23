@@ -1,6 +1,8 @@
+name: Publish binaries
+
 on:
-    release:
-      types: [created]
+  tag:
+    types: [created]
   name: Handle Release
   jobs:
     generate:
@@ -26,4 +28,4 @@ on:
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
-            args: 'example-*'
+            args: "example-*"

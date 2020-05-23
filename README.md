@@ -1,3 +1,5 @@
+![CI](https://github.com/guillaumeparis2000/mansionEyeBot/workflows/CI/badge.svg)
+
 Before executing the bot remember to export yout telegram token and your allowed users like this:
 
 ```sh

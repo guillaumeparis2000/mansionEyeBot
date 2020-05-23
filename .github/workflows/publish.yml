@@ -2,8 +2,8 @@ name: build_and_publish_binaries
 
 on:
   push:
-    # tags:
-    #   - v*
+    tags:
+      - v*
 
 jobs:
   build:
@@ -20,7 +20,7 @@ jobs:
         run: make release-pi1
       - name: Release
         uses: softprops/action-gh-release@v1
-        # if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             build/linux/amd64/mansioneye

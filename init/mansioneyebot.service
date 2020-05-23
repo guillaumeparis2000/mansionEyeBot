@@ -7,6 +7,7 @@ Restart=always
 RestartSec=5s
 Environment=TELEGRAM_TOKEN=<YOUR_TOKEN>
 Environment=TELEGRAM_VALID_USERS=user1,user4
+Environment=TELEGRAM_CHAT_IDS=13245,218546
 ExecStart=/opt/goldorackBot/mansionEyeBot
 
 [Install]

@@ -21,7 +21,7 @@ GO                  := go
 GCFLAGS             :=
 GCFLAGS_RELEASE     := $(GCFLAGS)
 GCFLAGS_RELEASE_PI  := $(GCFLAGS) GOOS=linux GOARCH=arm GOARM=6 go build  -ldflags="-s -w"
-GCFLAGS_RELEASE_PI1 := $(GCFLAGS) GOOS=linux GOARCH=arm GOARM=6 go build  -ldflags="-s -w"
+GCFLAGS_RELEASE_PI1 := $(GCFLAGS) GOOS=linux GOARCH=arm GOARM=5 go build  -ldflags="-s -w"
 GCFLAGS_DEBUG       := $(GCFLAGS) -N -l
 
 default:      release

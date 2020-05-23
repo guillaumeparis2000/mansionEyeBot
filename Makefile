@@ -45,12 +45,12 @@ build/release/%: $(GOFILES)
 	@$(GO) build -ldflags="$(LDFLAGS)" -trimpath -i -o "build/linux/amd64/mansioneye" -gcflags "$(GCFLAGS_RELEASE)" "$(MODULE)/cmd/$(@F)"
 
 build/release-pi/%: $(GOFILES)
-	@echo "   \x1b[1;34mgo build \x1b[0;1m(release-pi)\x1b[0m  build/linux/arm6/mansioneye"
-	@GOOS=linux GOARCH=arm GOARM=6 $(GO) build -ldflags="$(LDFLAGS) -s -w" -trimpath -i -o "build/linux/arm6/mansioneye" -gcflags "$(GCFLAGS_RELEASE_PI)" "$(MODULE)/cmd/$(@F)"
+	@echo "   \x1b[1;34mgo build \x1b[0;1m(release-pi)\x1b[0m  build/linux/arm6/mansioneye-arm6"
+	@GOOS=linux GOARCH=arm GOARM=6 $(GO) build -ldflags="$(LDFLAGS) -s -w" -trimpath -i -o "build/linux/arm6/mansioneye-arm6" -gcflags "$(GCFLAGS_RELEASE_PI)" "$(MODULE)/cmd/$(@F)"
 
 build/release-pi1/%: $(GOFILES)
-	@echo "   \x1b[1;34mgo build \x1b[0;1m(release-pi1)\x1b[0m  build/linux/arm5/mansioneye"
-	@GOOS=linux GOARCH=arm GOARM=5 $(GO) build -ldflags="$(LDFLAGS) -s -w" -trimpath -i -o "build/linux/arm5/mansioneye" -gcflags "$(GCFLAGS_RELEASE_PI1)" "$(MODULE)/cmd/$(@F)"
+	@echo "   \x1b[1;34mgo build \x1b[0;1m(release-pi1)\x1b[0m  build/linux/arm5/mansioneye-arm5"
+	@GOOS=linux GOARCH=arm GOARM=5 $(GO) build -ldflags="$(LDFLAGS) -s -w" -trimpath -i -o "build/linux/arm5/mansioneye-arm5" -gcflags "$(GCFLAGS_RELEASE_PI1)" "$(MODULE)/cmd/$(@F)"
 
 clean:
 	@echo "                   \x1b[1;31mrm\x1b[0m  $(CMDS)"

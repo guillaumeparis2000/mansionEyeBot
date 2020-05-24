@@ -26,6 +26,7 @@ GCFLAGS_RELEASE_PI1 := $(GCFLAGS)
 GCFLAGS_DEBUG       := $(GCFLAGS) -N -l
 
 LDFLAGS := -X github.com/guillaumeparis2000/mansionEyeBot/internal/version.metadata=${VERSION_METADATA}
+LDFLAGS := -X github.com/guillaumeparis2000/mansionEyeBot/internal/version.version=${GIT_TAG}
 LDFLAGS += -X github.com/guillaumeparis2000/mansionEyeBot/internal/version.gitCommit=${GIT_COMMIT}
 LDFLAGS += -X github.com/guillaumeparis2000/mansionEyeBot/internal/version.gitTreeState=${GIT_DIRTY}
 

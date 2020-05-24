@@ -2,13 +2,16 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"strings"
 
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/telegrambot"
+	"github.com/guillaumeparis2000/mansionEyeBot/internal/version"
 )
 
 func main() {
+	versionPtr := flag.Bool("version", false, "MansionEyeBot version")
 	actionPtr := flag.String("action", "service", "action name: service, send-picture")
 	picturePtr := flag.String("picture", "picture", "picture path")
 
@@ -19,7 +22,12 @@ func main() {
 
 	bot := telegrambot.NewTelegramBot(token, validUsers, chatIds)
 
-	if *actionPtr == "service" {
+	if *versionPtr == true {
+		buildData := version.Get()
+		fmt.Printf("version: %s\n", buildData.Version)
+		fmt.Printf("Git commit: %s\n", buildData.GitCommit)
+		fmt.Printf("Go version: %s\n", buildData.GoVersion)
+	} else if *actionPtr == "service" {
 		bot.HandleService()
 	} else if *actionPtr == "send-picture" && *picturePtr != "" {
 		picture := *picturePtr

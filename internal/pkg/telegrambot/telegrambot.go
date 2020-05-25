@@ -48,7 +48,7 @@ func (bc *Botconfig) auth(h tbot.UpdateHandler) tbot.UpdateHandler {
 }
 
 // HandleService start the telegram bot.
-func (bc *Botconfig) HandleService() {
+func (bc *Botconfig) HandleService() (bool, error) {
 	bc.bot.HandleMessage("/status", bc.statusHandler)
 	bc.bot.HandleMessage("/pause", bc.pauseHandler)
 	bc.bot.HandleMessage("/resume", bc.resumeHandler)
@@ -59,7 +59,14 @@ func (bc *Botconfig) HandleService() {
 	bc.bot.HandleMessage("/get_my_id", bc.getMyIDHandler)
 	bc.bot.HandleMessage("/valid_users", bc.validUsersHandler)
 
+	err := bc.bot.Start()
+	if err != nil {
+		return false, err
+	}
+
 	log.Print("Telegram Bot successfully started!")
+
+	return true, nil
 }
 
 // HandleSendPicture allow to send a picture with the bot to all chat ids defined.

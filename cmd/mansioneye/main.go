@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -20,7 +21,6 @@ func main() {
 
 	flag.Parse()
 
-
 	if *versionPtr == true {
 		buildData := version.Get()
 		fmt.Printf("version: %s\n", buildData.Version)
@@ -29,7 +29,13 @@ func main() {
 	} else {
 		bot := telegrambot.NewTelegramBot(token, validUsers, chatIds)
 		api := api.Initialize(bot)
-		bot.HandleService()
 		api.Run()
+
+		_, err := bot.HandleService()
+		if err != nil {
+			log.Print("Telegram not starting!")
+			log.Fatal(err)
+		}
+
 	}
 }

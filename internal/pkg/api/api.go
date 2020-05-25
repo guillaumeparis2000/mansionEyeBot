@@ -34,7 +34,7 @@ func Initialize(bot *telegrambot.Botconfig) *API {
 
 // Run the API.
 func (a *API) Run() {
-	http.ListenAndServe(":8001", a.Router)
+	go http.ListenAndServe(":8001", a.Router)
 	log.Print("Rest API started on port 8001")
 }
 

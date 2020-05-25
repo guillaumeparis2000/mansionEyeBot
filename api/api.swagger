@@ -1,0 +1,48 @@
+openapi: 3.0.0
+info:
+  description: MansionEyeBot API
+  version: "1.0.0"
+  title: MansionEyeBot API
+  contact:
+    email: guillaumeparis2000@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+paths:
+  /picture:
+    post:
+      summary: Send picture to Telegram Bot
+      operationId: sendPicture
+      description: Send Picture to Telegram Bot
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PictureItem'
+        description: picture item to send
+servers:
+  - url: 'http://localhost:8001'
+components:
+  schemas:
+    PictureItem:
+      type: object
+      required:
+        - path
+        - name
+      properties:
+        path:
+          type: string
+          example: /your/file/path.png
+        name:
+          type: string
+          example: picture_name
+        sent:
+          type: boolean
+          example: true

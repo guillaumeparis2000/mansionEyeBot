@@ -60,9 +60,9 @@ func (bc *Botconfig) HandleService() {
 }
 
 // HandleSendPicture allow to send a picture with the bot to all chat ids defined.
-func (bc *Botconfig) HandleSendPicture(picture string) {
+func (bc *Botconfig) HandleSendPicture(picture string, name string) {
 	for _, chatID := range bc.chatIds {
-		_, err := bc.client.SendPhotoFile(chatID, picture, tbot.OptCaption("Motion Detected"))
+		_, err := bc.client.SendPhotoFile(chatID, picture, tbot.OptCaption("Motion Detected on " + name))
 		if err != nil {
 			bc.client.SendMessage(chatID, err.Error())
 		}

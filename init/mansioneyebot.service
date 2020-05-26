@@ -8,6 +8,8 @@ RestartSec=5s
 Environment=TELEGRAM_TOKEN=<YOUR_TOKEN>
 Environment=TELEGRAM_VALID_USERS=user1,user4
 Environment=TELEGRAM_CHAT_IDS=13245,218546
+Environment=YEELIGHT_DESK=lamp1.lan
+Environment=YEELIGHT_SALON=lamp2.lan
 ExecStart=/opt/mansionEyeBot/mansionEyeBot
 
 [Install]

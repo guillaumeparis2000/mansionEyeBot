@@ -21,7 +21,8 @@ To compile the binary, you can use the make file like this:
 
 Copy the executable in `/opt/mansionEyeBot/mansionEyeBot`
 Copy the `init/mansioneyebot.service` file in `/etc/systemd/system/`
-Edit `mansioneyebot.service` and replace `TELEGRAM_TOKEN`, `TELEGRAM_VALID_USERS` and `TELEGRAM_CHAT_IDS` by the real values.
+Edit `mansioneyebot.service` and replace `TELEGRAM_TOKEN`, `TELEGRAM_VALID_USERS`,
+`TELEGRAM_CHAT_IDS`, `YEELIGHT_DESK` and `YEELIGHT_SALON` by the real values.
 
 Make the file executable:
 

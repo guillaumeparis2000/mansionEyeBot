@@ -1,4 +1,6 @@
 github.com/gorilla/mux v1.7.4 h1:VuZ8uybHlWmqV03+zRzdwKL4tUnIp1MAQtp1mIFE1bc=
 github.com/gorilla/mux v1.7.4/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/nunows/goyeelight v0.0.0-20170110232607-97d60f7b1814 h1:v5BGdq4dupuZ3Rahv/sgxdxyBN5NqHr2eWGrXb+cymo=
+github.com/nunows/goyeelight v0.0.0-20170110232607-97d60f7b1814/go.mod h1:hcH1JC+brIM6HXIUmtXDaQIlFNWYv2RyPAoA9zKR520=
 github.com/yanzay/tbot/v2 v2.2.0 h1:bK1+XTwY59IskXpwtHc/ItfU2uELTTqYP3pajfBaPeM=
 github.com/yanzay/tbot/v2 v2.2.0/go.mod h1:q0+8JblBq9tLAnKHdBIZsHwDvMS9TfO6mNfaAk1VrHg=

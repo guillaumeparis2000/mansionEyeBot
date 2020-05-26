@@ -10,6 +10,7 @@ import (
 
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/api"
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/telegrambot"
+	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/yeelight"
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/version"
 )
 
@@ -20,6 +21,9 @@ func main() {
 	validUsers := strings.Split(os.Getenv("TELEGRAM_VALID_USERS"), ",")
 	chatIds := strings.Split(os.Getenv("TELEGRAM_CHAT_IDS"), ",")
 
+	desk := os.Getenv("YEELIGHT_DESK")
+	salon := os.Getenv("YEELIGHT_SALON")
+
 	flag.Parse()
 
 	if *versionPtr == true {
@@ -28,7 +32,8 @@ func main() {
 		fmt.Printf("Git commit: %s\n", buildData.GitCommit)
 		fmt.Printf("Go version: %s\n", buildData.GoVersion)
 	} else {
-		botConfig := telegrambot.NewTelegramBot(token, validUsers, chatIds)
+		yeelights := yeelight.NewYeelights(desk, salon)
+		botConfig := telegrambot.NewTelegramBot(token, validUsers, chatIds, yeelights)
 
 		api := api.Initialize(botConfig)
 		go http.ListenAndServe(":8001", api.Router)

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/motioneye"
+	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/yeelight"
 	"github.com/yanzay/tbot/v2"
 )
 
@@ -16,10 +17,11 @@ type Botconfig struct {
 	chatIds []string
 	client *tbot.Client
 	Bot *tbot.Server
+	yeelights *yeelight.Lamps
 }
 
 // NewTelegramBot telegram bot constructor to initialize the bot
-func NewTelegramBot(token string, validUsers []string, chatIds []string) *Botconfig{
+func NewTelegramBot(token string, validUsers []string, chatIds []string, yeelights *yeelight.Lamps) *Botconfig{
 	app := &Botconfig{}
 
 	app.token = token
@@ -27,6 +29,7 @@ func NewTelegramBot(token string, validUsers []string, chatIds []string) *Botcon
 	app.chatIds = chatIds
 
 	app.Bot = tbot.New(app.token)
+	app.yeelights = yeelights
 
 	// Use validUsers for Auth middleware, allow to interact only with user1 and user2
 	app.Bot.Use(app.auth)
@@ -57,6 +60,10 @@ func (bc *Botconfig) HandleService() {
 	bc.Bot.HandleMessage("/snapshot", bc.snapShotHandler)
 	bc.Bot.HandleMessage("/get_my_id", bc.getMyIDHandler)
 	bc.Bot.HandleMessage("/valid_users", bc.validUsersHandler)
+	bc.Bot.HandleMessage("/desk_light_on", bc.deskLightOn)
+	bc.Bot.HandleMessage("/desk_light_off", bc.deskLightOff)
+	bc.Bot.HandleMessage("/salon_light_on", bc.salonLightOn)
+	bc.Bot.HandleMessage("/salon_light_off", bc.salonLightOff)
 }
 
 // HandleSendPicture allow to send a picture with the bot to all chat ids defined.
@@ -157,4 +164,24 @@ func contains(a []string, x string) bool {
 		}
 	}
 	return false
+}
+
+func (bc *Botconfig) deskLightOn(m *tbot.Message) {
+	bc.yeelights.DeskLampOn()
+	bc.sendResponse(m, "Desk light turned ON")
+}
+
+func (bc *Botconfig) deskLightOff(m *tbot.Message) {
+	bc.yeelights.DeskLampOff()
+	bc.sendResponse(m, "Desk light turned Off")
+}
+
+func (bc *Botconfig) salonLightOn(m *tbot.Message) {
+	bc.yeelights.SalonLampOn()
+	bc.sendResponse(m, "Salon light turned ON")
+}
+
+func (bc *Botconfig) salonLightOff(m *tbot.Message) {
+	bc.yeelights.DeskLampOff()
+	bc.sendResponse(m, "Salon light turned Off")
 }

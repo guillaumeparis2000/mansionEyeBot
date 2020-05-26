@@ -2,7 +2,6 @@ package telegrambot
 
 import (
 	"fmt"
-	"log"
 	"path/filepath"
 	"strings"
 
@@ -16,7 +15,7 @@ type Botconfig struct {
 	validUsers []string
 	chatIds []string
 	client *tbot.Client
-	bot *tbot.Server
+	Bot *tbot.Server
 }
 
 // NewTelegramBot telegram bot constructor to initialize the bot
@@ -27,11 +26,11 @@ func NewTelegramBot(token string, validUsers []string, chatIds []string) *Botcon
 	app.validUsers = validUsers
 	app.chatIds = chatIds
 
-	app.bot = tbot.New(app.token)
+	app.Bot = tbot.New(app.token)
 
 	// Use validUsers for Auth middleware, allow to interact only with user1 and user2
-	app.bot.Use(app.auth)
-	app.client = app.bot.Client()
+	app.Bot.Use(app.auth)
+	app.client = app.Bot.Client()
 
 	return app
 }
@@ -48,25 +47,16 @@ func (bc *Botconfig) auth(h tbot.UpdateHandler) tbot.UpdateHandler {
 }
 
 // HandleService start the telegram bot.
-func (bc *Botconfig) HandleService() (bool, error) {
-	bc.bot.HandleMessage("/status", bc.statusHandler)
-	bc.bot.HandleMessage("/pause", bc.pauseHandler)
-	bc.bot.HandleMessage("/resume", bc.resumeHandler)
-	bc.bot.HandleMessage("/check", bc.checkHandler)
-	bc.bot.HandleMessage("/time", bc.timeHandler)
-	bc.bot.HandleMessage("/video", bc.videoHandler)
-	bc.bot.HandleMessage("/snapshot", bc.snapShotHandler)
-	bc.bot.HandleMessage("/get_my_id", bc.getMyIDHandler)
-	bc.bot.HandleMessage("/valid_users", bc.validUsersHandler)
-
-	err := bc.bot.Start()
-	if err != nil {
-		return false, err
-	}
-
-	log.Print("Telegram Bot successfully started!")
-
-	return true, nil
+func (bc *Botconfig) HandleService() {
+	bc.Bot.HandleMessage("/status", bc.statusHandler)
+	bc.Bot.HandleMessage("/pause", bc.pauseHandler)
+	bc.Bot.HandleMessage("/resume", bc.resumeHandler)
+	bc.Bot.HandleMessage("/check", bc.checkHandler)
+	bc.Bot.HandleMessage("/time", bc.timeHandler)
+	bc.Bot.HandleMessage("/video", bc.videoHandler)
+	bc.Bot.HandleMessage("/snapshot", bc.snapShotHandler)
+	bc.Bot.HandleMessage("/get_my_id", bc.getMyIDHandler)
+	bc.Bot.HandleMessage("/valid_users", bc.validUsersHandler)
 }
 
 // HandleSendPicture allow to send a picture with the bot to all chat ids defined.

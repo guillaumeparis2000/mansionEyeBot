@@ -32,12 +32,6 @@ func Initialize(bot *telegrambot.Botconfig) *API {
 	return a
 }
 
-// Run the API.
-func (a *API) Run() {
-	http.ListenAndServe(":8001", a.Router)
-	log.Print("Rest API started on port 8001")
-}
-
 func (a *API) handleSendPicture(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var picture PictureData

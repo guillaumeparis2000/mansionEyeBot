@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -20,16 +22,24 @@ func main() {
 
 	flag.Parse()
 
-
 	if *versionPtr == true {
 		buildData := version.Get()
 		fmt.Printf("version: %s\n", buildData.Version)
 		fmt.Printf("Git commit: %s\n", buildData.GitCommit)
 		fmt.Printf("Go version: %s\n", buildData.GoVersion)
 	} else {
-		bot := telegrambot.NewTelegramBot(token, validUsers, chatIds)
-		api := api.Initialize(bot)
-		bot.HandleService()
-		api.Run()
+		botConfig := telegrambot.NewTelegramBot(token, validUsers, chatIds)
+
+		api := api.Initialize(botConfig)
+		go http.ListenAndServe(":8001", api.Router)
+		log.Print("Rest API started on port 8001")
+
+		log.Print("Starting Telegram Bot...")
+		botConfig.HandleService()
+		err := botConfig.Bot.Start()
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Print("Telegram Bot successfully started!")
 	}
 }

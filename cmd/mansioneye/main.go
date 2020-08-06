@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/facebookgo/pidfile"
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/api"
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/telegrambot"
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/yeelight"
@@ -32,6 +33,14 @@ func main() {
 		fmt.Printf("Git commit: %s\n", buildData.GitCommit)
 		fmt.Printf("Go version: %s\n", buildData.GoVersion)
 	} else {
+		// create pid file
+		pidfile.SetPidfilePath("/var/run/mansioneye-bot.pid")
+
+		piderror := pidfile.Write()
+		if piderror != nil {
+			panic("Could not write pid file")
+		}
+
 		yeelights := yeelight.NewYeelights(desk, salon)
 		botConfig := telegrambot.NewTelegramBot(token, validUsers, chatIds, yeelights)
 

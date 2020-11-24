@@ -11,7 +11,6 @@ import (
 	"github.com/facebookgo/pidfile"
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/api"
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/telegrambot"
-	"github.com/guillaumeparis2000/mansionEyeBot/internal/pkg/yeelight"
 	"github.com/guillaumeparis2000/mansionEyeBot/internal/version"
 )
 
@@ -21,9 +20,6 @@ func main() {
 	token := os.Getenv("TELEGRAM_TOKEN")
 	validUsers := strings.Split(os.Getenv("TELEGRAM_VALID_USERS"), ",")
 	chatIds := strings.Split(os.Getenv("TELEGRAM_CHAT_IDS"), ",")
-
-	desk := os.Getenv("YEELIGHT_DESK")
-	salon := os.Getenv("YEELIGHT_SALON")
 
 	flag.Parse()
 
@@ -41,8 +37,7 @@ func main() {
 			panic("Could not write pid file")
 		}
 
-		yeelights := yeelight.NewYeelights(desk, salon)
-		botConfig := telegrambot.NewTelegramBot(token, validUsers, chatIds, yeelights)
+		botConfig := telegrambot.NewTelegramBot(token, validUsers, chatIds)
 
 		api := api.Initialize(botConfig)
 		go http.ListenAndServe(":8001", api.Router)
